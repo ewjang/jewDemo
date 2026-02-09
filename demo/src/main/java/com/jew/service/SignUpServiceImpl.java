@@ -4,17 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jew.mapper.HomeMapper;
+import com.jew.mapper.SignUpMapper;
+import com.jew.models.Member;
 
 @Service
-public class HomeServiceImpl implements HomeService {
+public class SignUpServiceImpl implements SignUpService {
     
     @Autowired
-	HomeMapper homeMapper;
+	SignUpMapper signUpMapper;
 	
 	@Transactional
-	public int javaLec() throws Exception {
-		int temp = 93;
-		return homeMapper.getQueryTest(temp);
+	public void signup(Member member) throws Exception {
+		signUpMapper.signup(member);
 	}
 }

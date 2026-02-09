@@ -71,6 +71,11 @@
                 transform: none;
                 box-shadow: none;
             }
+
+            .required-mark {
+                color: #e74c3c;
+                margin-left: 2px;
+            }
         </style>
     </head>
 
@@ -83,33 +88,39 @@
 
             <form id="signupForm" action="/signup" method="post">
                 <div class="form-group">
-                    <label for="username">아이디</label>
-                    <input type="text" id="username" name="username" placeholder="아이디를 입력하세요 (최소 6자)" minlength="6" required>
+                    <label for="user_id">아이디<span class="required-mark">*</span></label>
+                    <input type="text" id="user_id" name="USER_ID" placeholder="아이디를 입력하세요 (최소 6자)" minlength="6" required>
                     <div class="password-requirements">최소 6자리 이상 입력해주세요</div>
-                    <div class="error-message" id="usernameLengthError">아이디는 6자 이상이어야 합니다.</div>
+                    <div class="error-message" id="user_idLengthError">아이디는 6자 이상이어야 합니다.</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">비밀번호</label>
-                    <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                    <label for="password">비밀번호<span class="required-mark">*</span></label>
+                    <input type="password" id="password" name="PASSWORD" placeholder="비밀번호를 입력하세요" required>
                     <div class="password-requirements">대문자 1개 이상, 특수문자 1개 이상 포함</div>
                     <div class="error-message" id="passwordError">비밀번호는 대문자와 특수문자를 포함해야 합니다.</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="passwordConfirm">비밀번호 확인</label>
-                    <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="비밀번호를 다시 입력하세요" required>
+                    <label for="passwordConfirm">비밀번호 확인<span class="required-mark">*</span></label>
+                    <input type="password" id="passwordConfirm" placeholder="비밀번호를 다시 입력하세요" required>
                     <div class="error-message" id="passwordConfirmError">비밀번호가 일치하지 않습니다.</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="name">이름</label>
-                    <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required>
+                    <label for="user_nm">이름<span class="required-mark">*</span></label>
+                    <input type="text" id="user_nm" name="USER_NM" placeholder="이름을 입력하세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone_num">휴대폰 번호</label>
+                    <input type="tel" id="phone_num" name="PHONE_NUM" placeholder="010-0000-0000" maxlength="13">
+                    <div class="error-message" id="phone_numError">올바른 휴대폰 번호 형식이 아닙니다.</div>
                 </div>
 
                 <div class="form-group">
                     <label for="email">이메일</label>
-                    <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                    <input type="email" id="email" name="EMAIL" placeholder="example@email.com">
                     <div class="error-message" id="emailError">올바른 이메일 형식이 아닙니다.</div>
                 </div>
 
@@ -123,36 +134,40 @@
 
         <script>
             const form = document.getElementById('signupForm');
-            const username = document.getElementById('username');
+            const user_id = document.getElementById('user_id');
             const password = document.getElementById('password');
             const passwordConfirm = document.getElementById('passwordConfirm');
-            const name = document.getElementById('name');
+            const user_nm = document.getElementById('user_nm');
+            const phone_num = document.getElementById('phone_num');
             const email = document.getElementById('email');
 
             // 비밀번호 정규식: 대문자 1개 이상, 특수문자 1개 이상
             const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/;
 
+            // 휴대폰 번호 정규식
+            const phone_numRegex = /^01[0-9]-[0-9]{3,4}-[0-9]{4}$/;
+
             // 이메일 정규식
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             // 아이디 길이 체크 (실시간)
-            username.addEventListener('input', function() {
-                const usernameLengthError = document.getElementById('usernameLengthError');
+            user_id.addEventListener('input', function() {
+                const user_idLengthError = document.getElementById('user_idLengthError');
 
-                if (username.value.trim() === '') {
-                    username.classList.remove('error', 'success');
-                    usernameLengthError.classList.remove('show');
+                if (user_id.value.trim() === '') {
+                    user_id.classList.remove('error', 'success');
+                    user_idLengthError.classList.remove('show');
                     return;
                 }
 
-                if (username.value.trim().length < 6) {
-                    username.classList.add('error');
-                    username.classList.remove('success');
-                    usernameLengthError.classList.add('show');
+                if (user_id.value.trim().length < 6) {
+                    user_id.classList.add('error');
+                    user_id.classList.remove('success');
+                    user_idLengthError.classList.add('show');
                 } else {
-                    username.classList.remove('error');
-                    username.classList.add('success');
-                    usernameLengthError.classList.remove('show');
+                    user_id.classList.remove('error');
+                    user_id.classList.add('success');
+                    user_idLengthError.classList.remove('show');
                 }
             });
 
@@ -205,6 +220,31 @@
 
             passwordConfirm.addEventListener('input', checkPasswordConfirm);
 
+            // 휴대폰 번호 자동 하이픈
+            phone_num.addEventListener('input', function() {
+                let value = phone_num.value.replace(/[^0-9]/g, '');
+                if (value.length > 3 && value.length <= 7) {
+                    value = value.substring(0, 3) + '-' + value.substring(3);
+                } else if (value.length > 7) {
+                    value = value.substring(0, 3) + '-' + value.substring(3, 7) + '-' + value.substring(7, 11);
+                }
+                phone_num.value = value;
+
+                const phone_numError = document.getElementById('phone_numError');
+                if (phone_num.value === '') {
+                    phone_num.classList.remove('error', 'success');
+                    phone_numError.classList.remove('show');
+                } else if (!phone_numRegex.test(phone_num.value)) {
+                    phone_num.classList.add('error');
+                    phone_num.classList.remove('success');
+                    phone_numError.classList.add('show');
+                } else {
+                    phone_num.classList.remove('error');
+                    phone_num.classList.add('success');
+                    phone_numError.classList.remove('show');
+                }
+            });
+
             // 이메일 유효성 검사
             email.addEventListener('blur', function() {
                 const emailError = document.getElementById('emailError');
@@ -232,10 +272,10 @@
                 let isValid = true;
 
                 // 아이디 길이 체크
-                if (username.value.trim().length < 6) {
+                if (user_id.value.trim().length < 6) {
                     isValid = false;
-                    username.classList.add('error');
-                    document.getElementById('usernameLengthError').classList.add('show');
+                    user_id.classList.add('error');
+                    document.getElementById('user_idLengthError').classList.add('show');
                 }
 
                 // 비밀번호 정규식 체크
@@ -252,8 +292,21 @@
                     document.getElementById('passwordConfirmError').classList.add('show');
                 }
 
-                // 이메일 유효성 체크
-                if (!emailRegex.test(email.value)) {
+                // 이름 필수 체크
+                if (user_nm.value.trim() === '') {
+                    isValid = false;
+                    user_nm.classList.add('error');
+                }
+
+                // 휴대폰 번호 유효성 체크 (입력한 경우만)
+                if (phone_num.value !== '' && !phone_numRegex.test(phone_num.value)) {
+                    isValid = false;
+                    phone_num.classList.add('error');
+                    document.getElementById('phone_numError').classList.add('show');
+                }
+
+                // 이메일 유효성 체크 (입력한 경우만)
+                if (email.value !== '' && !emailRegex.test(email.value)) {
                     isValid = false;
                     email.classList.add('error');
                     document.getElementById('emailError').classList.add('show');
