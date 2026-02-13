@@ -6,8 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.jew.models.Member;
 import com.jew.service.SignUpService;
+import com.jew.models.Member;
 
 @Controller
 public class SignUpController {
