@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0e14;
+    --sidebar-bg: #10131c;
+    --card: #151821;
+    --card2: #1b1f2e;
+    --border: rgba(255,255,255,0.07);
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --accent3: #43e97b;
+    --text: #e8eaf2;
+    --muted: #6b7280;
+    --sidebar-w: 260px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ───── SIDEBAR ───── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    animation: slideInLeft .5s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  @keyframes slideInLeft {
+    from { transform: translateX(-100%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+
+  .logo {
+    padding: 28px 24px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 18px;
+    box-shadow: 0 0 20px rgba(108,99,255,.4);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text span { color: var(--accent); }
+
+  .nav-section { padding: 20px 16px 8px; }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 8px 10px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all .18s ease;
+    margin-bottom: 2px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(108,99,255,.12), transparent);
+    opacity: 0;
+    transition: opacity .2s;
+    border-radius: 10px;
+  }
+
+  .nav-item:hover { color: var(--text); }
+  .nav-item:hover::before { opacity: 1; }
+
+  .nav-item.active {
+    color: var(--text);
+    background: rgba(108,99,255,.15);
+    border: 1px solid rgba(108,99,255,.25);
+  }
+
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 3px 0 0 3px;
+  }
+
+  .nav-icon {
+    width: 18px; height: 18px;
+    display: grid; place-items: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent2);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+
+  .user-card:hover { border-color: rgba(108,99,255,.4); }
+
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    display: grid; place-items: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: #0c0e14;
+    flex-shrink: 0;
+  }
+
+  .user-info .name {
+    font-size: 13px; font-weight: 500;
+    line-height: 1.3;
+  }
+
+  .user-info .role {
+    font-size: 11px; color: var(--muted);
+  }
+
+  .user-card .dots { margin-left: auto; color: var(--muted); font-size: 18px; letter-spacing: 1px; }
+
+  /* ───── MAIN ───── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ───── TOPBAR ───── */
+  .topbar {
+    height: 64px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 16px;
+    background: rgba(12,14,20,.8);
+    backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 50;
+    animation: fadeDown .4s .2s both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .topbar-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .search-box {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    width: 220px;
+    transition: border-color .2s, width .3s;
+  }
+
+  .search-box:focus-within {
+    border-color: rgba(108,99,255,.5);
+    width: 280px;
+  }
+
+  .search-box input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .search-box input::placeholder { color: var(--muted); }
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    display: grid; place-items: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    font-size: 16px;
+    position: relative;
+  }
+
+  .icon-btn:hover { border-color: rgba(108,99,255,.4); background: var(--card2); }
+
+  .notif-dot {
+    position: absolute;
+    top: 7px; right: 7px;
+    width: 7px; height: 7px;
+    background: var(--accent2);
+    border-radius: 50%;
+    border: 2px solid var(--sidebar-bg);
+  }
+
+  .topbar-avatar {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    display: grid; place-items: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: #0c0e14;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color .2s;
+  }
+
+  .topbar-avatar:hover { border-color: var(--accent3); }
+
+  /* ───── CONTENT ───── */
+  .content {
+    padding: 32px;
+    flex: 1;
+    animation: fadeUp .5s .3s both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .welcome {
+    margin-bottom: 32px;
+  }
+
+  .welcome h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .welcome h1 span {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .welcome p { color: var(--muted); font-size: 14px; }
+
+  /* ───── STAT CARDS ───── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s, border-color .2s;
+    animation: fadeUp .5s both;
+  }
+
+  .stat-card:nth-child(1) { animation-delay: .35s; }
+  .stat-card:nth-child(2) { animation-delay: .42s; }
+  .stat-card:nth-child(3) { animation-delay: .49s; }
+  .stat-card:nth-child(4) { animation-delay: .56s; }
+
+  .stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(108,99,255,.3);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    opacity: .06;
+  }
+
+  .stat-card:nth-child(1)::before { background: var(--accent);  }
+  .stat-card:nth-child(2)::before { background: var(--accent2); }
+  .stat-card:nth-child(3)::before { background: var(--accent3); }
+  .stat-card:nth-child(4)::before { background: #f7c59f;        }
+
+  .stat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card:nth-child(1) .stat-icon { background: rgba(108,99,255,.15); }
+  .stat-card:nth-child(2) .stat-icon { background: rgba(255,101,132,.15); }
+  .stat-card:nth-child(3) .stat-icon { background: rgba(67,233,123,.15);  }
+  .stat-card:nth-child(4) .stat-icon { background: rgba(247,197,159,.15); }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 12px; color: var(--muted); }
+
+  .stat-change {
+    margin-top: 14px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .stat-change.up   { color: var(--accent3); }
+  .stat-change.down { color: var(--accent2); }
+
+  /* ───── BOTTOM GRID ───── */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+  }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: fadeUp .5s .6s both;
+  }
+
+  .panel-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .panel-action {
+    font-size: 12px;
+    color: var(--accent);
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+
+  .panel-action:hover { opacity: .7; }
+
+  /* ───── TABLE ───── */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead tr { border-bottom: 1px solid var(--border); }
+
+  th {
+    text-align: left;
+    padding: 12px 24px;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(255,255,255,.03);
+    vertical-align: middle;
+  }
+
+  tbody tr { transition: background .15s; }
+  tbody tr:hover { background: rgba(255,255,255,.025); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .user-cell { display: flex; align-items: center; gap: 10px; }
+
+  .mini-avatar {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #0c0e14;
+    flex-shrink: 0;
+  }
+
+  .cell-name  { font-weight: 500; }
+  .cell-email { font-size: 11px; color: var(--muted); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .badge.active { background: rgba(67,233,123,.12); color: var(--accent3); border: 1px solid rgba(67,233,123,.25); }
+  .badge.pending { background: rgba(247,197,159,.12); color: #f7c59f; border: 1px solid rgba(247,197,159,.25); }
+  .badge.inactive { background: rgba(255,101,132,.12); color: var(--accent2); border: 1px solid rgba(255,101,132,.25); }
+
+  /* ───── ACTIVITY FEED ───── */
+  .activity-list { padding: 8px 0; }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(255,255,255,.03);
+    transition: background .15s;
+  }
+
+  .activity-item:hover { background: rgba(255,255,255,.025); }
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-dot {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    display: grid; place-items: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .activity-text { font-size: 13px; line-height: 1.4; }
+  .activity-text strong { font-weight: 500; }
+  .activity-time { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  /* ───── MINI CHART (CSS only) ───── */
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 60px;
+    padding: 16px 24px 0;
+  }
+
+  .bar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    background: rgba(108,99,255,.25);
+    transition: background .2s;
+    animation: growUp .5s ease both;
+  }
+
+  .bar:hover { background: var(--accent); }
+  .bar.hi     { background: rgba(108,99,255,.5); }
+
+  @keyframes growUp {
+    from { transform: scaleY(0); transform-origin: bottom; }
+    to   { transform: scaleY(1); transform-origin: bottom; }
+  }
+
+  .bar:nth-child(1)  { height: 40%; animation-delay: .6s; }
+  .bar:nth-child(2)  { height: 65%; animation-delay: .65s; }
+  .bar:nth-child(3)  { height: 50%; animation-delay: .7s; }
+  .bar:nth-child(4)  { height: 80%; animation-delay: .75s; }
+  .bar:nth-child(5)  { height: 60%; animation-delay: .8s; }
+  .bar:nth-child(6)  { height: 90%; animation-delay: .85s; }
+  .bar:nth-child(7)  { height: 70%; animation-delay: .9s; }
+  .bar:nth-child(8)  { height: 55%; animation-delay: .95s; }
+  .bar:nth-child(9)  { height: 100%; animation-delay: 1s; }
+  .bar:nth-child(10) { height: 75%; animation-delay: 1.05s; }
+  .bar:nth-child(11) { height: 85%; animation-delay: 1.1s; }
+  .bar:nth-child(12) { height: 95%; animation-delay: 1.15s; }
+
+  /* ───── SCROLL ───── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ───── SIDEBAR ───── -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-text">Volt<span>Dash</span></div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">메인 메뉴</div>
+    <a class="nav-item active" href="#">
+      <span class="nav-icon">🏠</span> 대시보드
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">📊</span> 분석
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">👥</span> 사용자 관리
+      <span class="nav-badge">12</span>
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">🛍️</span> 주문
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">📦</span> 상품 관리
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">설정</div>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">🔔</span> 알림
+      <span class="nav-badge">3</span>
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">⚙️</span> 환경설정
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">🔒</span> 보안
+    </a>
+    <a class="nav-item" href="#">
+      <span class="nav-icon">💬</span> 고객 지원
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="avatar">KJ</div>
+      <div class="user-info">
+        <div class="name">김지훈</div>
+        <div class="role">관리자</div>
+      </div>
+      <div class="dots">···</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ───── MAIN ───── -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-title">대시보드</div>
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" placeholder="검색...">
+    </div>
+    <div class="topbar-actions">
+      <div class="icon-btn">🌙</div>
+      <div class="icon-btn">
+        🔔
+        <span class="notif-dot"></span>
+      </div>
+      <div class="topbar-avatar">KJ</div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="welcome">
+      <h1>좋은 아침이에요, <span>김지훈</span>님 👋</h1>
+      <p>오늘의 비즈니스 현황을 한눈에 확인하세요.</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">₩24.8M</div>
+        <div class="stat-label">이번 달 매출</div>
+        <div class="stat-change up">▲ 12.4% 지난달 대비</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🛒</div>
+        <div class="stat-value">1,429</div>
+        <div class="stat-label">신규 주문</div>
+        <div class="stat-change up">▲ 8.1% 지난달 대비</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👤</div>
+        <div class="stat-value">3,821</div>
+        <div class="stat-label">신규 회원</div>
+        <div class="stat-change up">▲ 5.3% 지난달 대비</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📉</div>
+        <div class="stat-value">2.4%</div>
+        <div class="stat-label">이탈률</div>
+        <div class="stat-change down">▼ 0.8% 지난달 대비</div>
+      </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
+
+      <!-- LEFT: TABLE -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">최근 주문 현황</div>
+          <div class="panel-action">모두 보기 →</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>고객</th>
+                <th>주문번호</th>
+                <th>금액</th>
+                <th>상태</th>
+                <th>날짜</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:linear-gradient(135deg,#6c63ff,#a78bfa)">이</div>
+                    <div>
+                      <div class="cell-name">이수연</div>
+                      <div class="cell-email">sooyeon@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>#ORD-0042</td>
+                <td>₩128,000</td>
+                <td><span class="badge active">완료</span></td>
+                <td>02.19</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">박</div>
+                    <div>
+                      <div class="cell-name">박민준</div>
+                      <div class="cell-email">minjun@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>#ORD-0041</td>
+                <td>₩54,500</td>
+                <td><span class="badge pending">처리중</span></td>
+                <td>02.19</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:linear-gradient(135deg,#ff6584,#ff9a9e)">최</div>
+                    <div>
+                      <div class="cell-name">최예진</div>
+                      <div class="cell-email">yejin@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>#ORD-0040</td>
+                <td>₩320,000</td>
+                <td><span class="badge active">완료</span></td>
+                <td>02.18</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:linear-gradient(135deg,#f7c59f,#ffd6a5)">정</div>
+                    <div>
+                      <div class="cell-name">정재원</div>
+                      <div class="cell-email">jaewon@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>#ORD-0039</td>
+                <td>₩89,000</td>
+                <td><span class="badge inactive">취소</span></td>
+                <td>02.17</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="mini-avatar" style="background:linear-gradient(135deg,#4fc3f7,#0288d1)">강</div>
+                    <div>
+                      <div class="cell-name">강하은</div>
+                      <div class="cell-email">haeun@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>#ORD-0038</td>
+                <td>₩245,000</td>
+                <td><span class="badge pending">처리중</span></td>
+                <td>02.17</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RIGHT: ACTIVITY -->
+      <div class="panel" style="animation-delay:.7s">
+        <div class="panel-header">
+          <div class="panel-title">최근 활동</div>
+          <div class="panel-action">더보기</div>
+        </div>
+
+        <!-- Mini Chart -->
+        <div class="chart-bars">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar hi"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar hi"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar hi"></div>
+        </div>
+
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-dot" style="background:rgba(108,99,255,.15)">🛒</div>
+            <div>
+              <div class="activity-text"><strong>이수연</strong>님이 주문을 완료했습니다.</div>
+              <div class="activity-time">방금 전</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:rgba(67,233,123,.15)">👤</div>
+            <div>
+              <div class="activity-text">신규 회원 <strong>박민준</strong>님이 가입했습니다.</div>
+              <div class="activity-time">5분 전</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:rgba(255,101,132,.15)">⚠️</div>
+            <div>
+              <div class="activity-text"><strong>재고 부족</strong> 경고 — 상품 3개</div>
+              <div class="activity-time">23분 전</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:rgba(247,197,159,.15)">💬</div>
+            <div>
+              <div class="activity-text">고객 문의 <strong>2건</strong>이 도착했습니다.</div>
+              <div class="activity-time">1시간 전</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:rgba(108,99,255,.15)">💰</div>
+            <div>
+              <div class="activity-text">월간 매출 목표 <strong>80%</strong> 달성!</div>
+              <div class="activity-time">3시간 전</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
