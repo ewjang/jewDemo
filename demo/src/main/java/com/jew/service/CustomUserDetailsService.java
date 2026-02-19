@@ -28,7 +28,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             if (member == null) {
                 throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username);
             }
-            return new User(member.getUSER_ID(), passwordEncode.encode(member.getPASSWORD()), Collections.emptyList());
+
+            String oneEncoding = passwordEncode.encode("1");
+            return new User(member.getUSER_ID(), member.getPASSWORD(), Collections.emptyList());
         } catch (UsernameNotFoundException e) {
             throw e;
         } catch (Exception e) {

@@ -1,6 +1,8 @@
 package com.jew.restController;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,7 +31,16 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
             String token = jwtUtil.generateToken(request.getUsername());
-            return ResponseEntity.ok(new JwtResponse(token));
+
+            ResponseCookie cookie = ResponseCookie.from("token", token)
+                    .httpOnly(false)
+                    .path("/")
+                    .maxAge(60 * 60)
+                    .build();
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                    .body(new JwtResponse(token));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 올바르지 않습니다.");
         }

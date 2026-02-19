@@ -42,15 +42,15 @@
                     fetch('/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: username, password: password })
+                        body: JSON.stringify({ username: username, password: password }),
+                        credentials: 'include'
                     })
                     .then(response => {
                         if (response.ok) return response.json();
                         throw new Error('로그인 실패');
                     })
                     .then(data => {
-                        localStorage.setItem('token', data.token);
-                        window.location.href = '/hello';
+                        window.location.href = '/dashboard';
                     })
                     .catch(error => {
                         alert('아이디 또는 비밀번호가 올바르지 않습니다.');
