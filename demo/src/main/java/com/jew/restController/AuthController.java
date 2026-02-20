@@ -22,7 +22,9 @@ import com.jew.models.RefreshToken;
 import com.jew.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
@@ -83,9 +85,13 @@ public class AuthController {
                     .body(new JwtResponse(accessToken));
 
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 올바르지 않습니다.");
+            log.warn("로그인 실패 - 잘못된 자격증명: {}", request.getUsername());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "아이디 또는 비밀번호가 올바르지 않습니다."));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("로그인 처리 중 오류가 발생했습니다.");
+            log.error("로그인 처리 중 오류 발생 - 사용자: {}", request.getUsername(), e);
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "로그인 처리 중 오류가 발생했습니다: " + e.getMessage()));
         }
     }
 

@@ -48,13 +48,13 @@
                     })
                     .then(response => {
                         if (response.ok) return response.json();
-                        throw new Error('로그인 실패');
+                        return response.json().then(err => { throw new Error(err.error || '로그인 실패'); });
                     })
                     .then(data => {
                         window.location.href = '/dashboard';
                     })
                     .catch(error => {
-                        showModal('아이디 또는 비밀번호가 올바르지 않습니다.', 'error');
+                        showModal(error.message || '로그인 처리 중 오류가 발생했습니다.', 'error');
                     });
                 });
             </script>
