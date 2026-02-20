@@ -2,6 +2,7 @@ package com.jew.filter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -22,12 +23,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
+    private static final List<String> SKIP_PATHS = List.of(
+        "/", "/index.html", "/index.css", "/login", "/signup", "/checkUserid", "/hello", "/error"
+    );
+
+    //토큰 검사할까?
+    //인증(Authentication)
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        
+        String path = request.getRequestURI();
+        return SKIP_PATHS.contains(path)
+            || path.startsWith("/css/")
+            || path.startsWith("/js/");
+            
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         String token = resolveToken(request);
-
+        
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
                 String username = jwtUtil.extractUsername(token);

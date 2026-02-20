@@ -4,7 +4,7 @@
 <mapper namespace="com.jew.mapper.SignUpMapper">
 
     <insert id="signup" parameterType="com.jew.models.Member">
-     /* SignUpMapper.signup [Signup.xml]  */
+     /* SignUpMapper.signup [SignUp.xml]  */
      
         <selectKey keyProperty="SEQ" resultType="int" order="BEFORE">
             SELECT MEMBER_SEQ.NEXTVAL FROM DUAL
@@ -16,5 +16,13 @@
 
 			
     </insert>
+
+    <select id="checkUserId" resultType="int">
+     /* SignUpMapper.checkUserId [SignUp.xml] : 아이디 중복 확인 */
+
+        SELECT COUNT(1)
+        FROM "MEMBER"
+        WHERE USER_ID = #{userId}
+    </select>
 
 </mapper>

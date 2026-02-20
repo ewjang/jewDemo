@@ -36,17 +36,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+     
+    //permitAll    
+    //접근 허용할까?
+    //인가(Authorization)
+
         http
             .csrf(csrf -> csrf.disable())
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index.css", "/index.html", "/login", "/signup", "/hello", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/", "/index.css", "/index.html", "/login", "/checkUserid", "/signup", "/hello", "/error", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
+        
         return http.build();
     }
 }

@@ -11,5 +11,7 @@ import com.jew.models.Member;
 public interface SignUpMapper {
 
     public void signup(Member member) throws Exception;
-    
+
+    public int checkUserId(String userId) throws Exception;
+
 }
