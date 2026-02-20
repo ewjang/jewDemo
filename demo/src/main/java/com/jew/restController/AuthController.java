@@ -1,6 +1,7 @@
 package com.jew.restController;
 
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
@@ -57,7 +58,7 @@ public class AuthController {
             tokenEntity.setUSER_ID(request.getUsername());
             tokenEntity.setTOKEN(refreshToken);
             tokenEntity.setEXPIRE_DT(
-                new Timestamp(System.currentTimeMillis() + jwtUtil.getRefreshTokenExpiry()).toString()
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis() + jwtUtil.getRefreshTokenExpiry()))
             );
             refreshTokenMapper.insertToken(tokenEntity);
 

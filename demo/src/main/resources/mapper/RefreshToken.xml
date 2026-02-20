@@ -12,7 +12,7 @@
 
         INSERT INTO "REFRESH_TOKEN"
         (SEQ, USER_ID, TOKEN, EXPIRE_DT, REG_DT)
-        VALUES(#{SEQ}, #{USER_ID}, #{TOKEN}, #{EXPIRE_DT}, SYSDATE)
+        VALUES(#{SEQ}, #{USER_ID}, #{TOKEN}, TO_DATE(#{EXPIRE_DT}, 'YYYY-MM-DD HH24:MI:SS'), SYSDATE)
     </insert>
 
     <select id="findByToken" resultType="com.jew.models.RefreshToken">
