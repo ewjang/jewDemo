@@ -47,7 +47,7 @@ public class SecurityConfig {
             .httpBasic(basic -> basic.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index.css", "/index.html", "/login", "/checkUserid", "/signup", "/hello", "/error", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/", "/index.css", "/index.html", "/login", "/refresh", "/logout", "/checkUserid", "/signup", "/hello", "/error", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);

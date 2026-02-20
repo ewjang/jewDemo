@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     private static final List<String> SKIP_PATHS = List.of(
-        "/", "/index.html", "/index.css", "/login", "/signup", "/checkUserid", "/hello", "/error"
+        "/", "/index.html", "/index.css", "/login", "/refresh", "/logout", "/signup", "/checkUserid", "/hello", "/error"
     );
 
     //토큰 검사할까?

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jew.mapper.RefreshTokenMapper">
+
+    <insert id="insertToken" parameterType="com.jew.models.RefreshToken">
+     /* RefreshTokenMapper.insertToken [RefreshToken.xml] : Refresh Token 저장 */
+
+        <selectKey keyProperty="SEQ" resultType="int" order="BEFORE">
+            SELECT REFRESH_TOKEN_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+
+        INSERT INTO "REFRESH_TOKEN"
+        (SEQ, USER_ID, TOKEN, EXPIRE_DT, REG_DT)
+        VALUES(#{SEQ}, #{USER_ID}, #{TOKEN}, #{EXPIRE_DT}, SYSDATE)
+    </insert>
+
+    <select id="findByToken" resultType="com.jew.models.RefreshToken">
+     /* RefreshTokenMapper.findByToken [RefreshToken.xml] : 토큰으로 조회 */
+
+        SELECT SEQ, USER_ID, TOKEN, TO_CHAR(EXPIRE_DT, 'YYYY-MM-DD HH24:MI:SS') AS EXPIRE_DT, TO_CHAR(REG_DT, 'YYYY-MM-DD HH24:MI:SS') AS REG_DT
+        FROM "REFRESH_TOKEN"
+        WHERE TOKEN = #{token}
+          AND EXPIRE_DT > SYSDATE
+    </select>
+
+    <delete id="deleteByUserId">
+     /* RefreshTokenMapper.deleteByUserId [RefreshToken.xml] : 사용자 토큰 전체 삭제 */
+
+        DELETE FROM "REFRESH_TOKEN"
+        WHERE USER_ID = #{userId}
+    </delete>
+
+    <delete id="deleteByToken">
+     /* RefreshTokenMapper.deleteByToken [RefreshToken.xml] : 특정 토큰 삭제 */
+
+        DELETE FROM "REFRESH_TOKEN"
+        WHERE TOKEN = #{token}
+    </delete>
+
+</mapper>
