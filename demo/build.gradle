@@ -30,7 +30,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
-	
 	//ojdbc
     implementation group: 'com.oracle.database.jdbc', name: 'ojdbc10', version: '19.21.0.0'
 
