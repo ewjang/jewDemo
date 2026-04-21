@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.jew")
-@MapperScan("com.jew.mapper")
+@MapperScan({"com.jew.mapper"})
 //@EnableJpaRepositories(basePackages = "com.jew.repository")
 public class JewProjApplication {
 

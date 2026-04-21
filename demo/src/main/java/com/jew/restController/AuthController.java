@@ -45,6 +45,8 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
 
+
+
             // 2. Access Token 생성
             String accessToken = jwtUtil.generateAccessToken(request.getUsername());
 
@@ -83,7 +85,7 @@ public class AuthController {
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                     .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                    .body(new JwtResponse(accessToken));
+                    .body(new JwtResponse(accessToken, request.getUsername()));
 
         } catch (BadCredentialsException e) {
             log.warn("로그인 실패 - 잘못된 자격증명: {}", request.getUsername());
@@ -133,7 +135,7 @@ public class AuthController {
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
-                    .body(new JwtResponse(newAccessToken));
+                    .body(new JwtResponse(newAccessToken , username));
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "토큰 갱신에 실패했습니다."));

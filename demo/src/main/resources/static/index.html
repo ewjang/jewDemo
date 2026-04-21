@@ -51,7 +51,29 @@
                         return response.json().then(err => { throw new Error(err.error || '로그인 실패'); });
                     })
                     .then(data => {
-                        window.location.href = '/dashboard';
+                        
+                        //data에 userId나 seq 받고 dashboard로 post 전달하기
+                        //window.location.href = '/dashboard?userId=' + data?.userId;
+
+                        var form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/dashboard';
+
+                        var input = document.createElement('input');
+                        var input2 = document.createElement('input');
+
+                        input.type = 'hidden';
+                        input.name = 'userId';
+                        input.value = data?.userId;
+                        form.appendChild(input);
+
+                        input2.type = 'hidden';
+                        input2.name = 'token';
+                        input2.value = data?.token;
+                        form.appendChild(input2);
+
+                        document.body.appendChild(form);
+                        form.submit();
                     })
                     .catch(error => {
                         showModal(error.message || '로그인 처리 중 오류가 발생했습니다.', 'error');
