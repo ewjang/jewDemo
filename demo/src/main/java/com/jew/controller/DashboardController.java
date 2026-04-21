@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.jew.models.JwtResponse;
@@ -37,6 +38,12 @@ public class DashboardController {
         httpSession.setAttribute("AUTH_MENUS", authMenus);
         
         return "dashboard";
+    }
+
+    @GetMapping("/menu_mng")
+    public String goMenuMng() throws Exception {
+
+        return "menu_mng";
     }
 
 
