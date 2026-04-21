@@ -2,13 +2,15 @@ package com.jew.service;
 
 import java.util.ArrayList;
 
+import com.jew.models.Member;
 import com.jew.models.Menu;
 
-public interface MenuService {
+public interface AccessService {
 
-    //@Autowired
+    
 	public int menuInsert(Menu menu) throws Exception;
 
-    //@Autowired
+    public Member getUserInfo(String userId) throws Exception;
+   
 	public ArrayList<Menu> myMenuList(String userId) throws Exception;
 }

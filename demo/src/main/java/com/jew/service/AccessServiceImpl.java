@@ -6,22 +6,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jew.mapper.MenuMapper;
+import com.jew.mapper.AccessMapper;
+import com.jew.models.Member;
 import com.jew.models.Menu;
 
 @Service
-public class MenuServiceImpl implements MenuService {
+public class AccessServiceImpl implements AccessService {
     
     @Autowired
-	MenuMapper menuMapper;
+	AccessMapper accessMapper;
 	
 	@Transactional
 	public int menuInsert(Menu menu) throws Exception {
-		return menuMapper.menuInsert(menu);
+		return accessMapper.menuInsert(menu);
 	}
 
     @Transactional
+    public Member getUserInfo(String userId) throws Exception {
+        return accessMapper.getUserInfo(userId);
+    }
+
+    @Transactional
     public ArrayList<Menu> myMenuList(String userId) throws Exception {
-        return menuMapper.myMenuList(userId);
+        return accessMapper.myMenuList(userId);
     }
 }

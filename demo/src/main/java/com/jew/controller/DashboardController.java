@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.jew.models.JwtResponse;
 import com.jew.models.Member;
 import com.jew.models.Menu;
-import com.jew.service.MenuService;
+import com.jew.service.AccessService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpSession;
 public class DashboardController {
 
     @Autowired
-    MenuService menuService;
+    AccessService accessService;
 
     @PostMapping("/dashboard")
     public String goDashboard(JwtResponse model, HttpSession httpSession) throws Exception {
@@ -28,12 +28,12 @@ public class DashboardController {
         //model
         
         //1. 사용자 기본정보 (이름, id, 연락처...)
-        Member member = null;
+        Member member = accessService.getUserInfo(model.getUserId());
         //2. 사용자 메뉴 권한 정보 
-        ArrayList<Menu> authMenus = menuService.myMenuList(model.getUserId());
+        ArrayList<Menu> authMenus = accessService.myMenuList(model.getUserId());
         
 
-        httpSession.setAttribute("USER_INFO", "1234");
+        httpSession.setAttribute("USER_INFO", member);
         httpSession.setAttribute("AUTH_MENUS", authMenus);
         
         return "dashboard";

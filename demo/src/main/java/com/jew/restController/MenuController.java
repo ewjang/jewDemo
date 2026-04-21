@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jew.models.Menu;
-import com.jew.service.MenuService;
+import com.jew.service.AccessService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MenuController {
 
-    MenuService menuService;
+    AccessService accessService;
     
     @GetMapping("/menuInsert")
     public ResponseEntity<?> menuInsert(@RequestBody Menu menu) {
         try {
-            int count = menuService.menuInsert(menu);
+            int count = accessService.menuInsert(menu);
             return ResponseEntity.ok(count);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.jew.mapper.MenuMapper">
-
+<mapper namespace="com.jew.mapper.AccessMapper">
+    <!--메뉴 컨트롤러 새로 생성하고 거기로 옮기기 -->
     <insert id="menuInsert" parameterType="com.jew.models.Menu">
-         /* MenuMapper.menuInsert [Menu.xml] 메뉴 등록 */
+         /* AccessMapper.menuInsert [AccessMapper.xml] 메뉴 등록 */
      
         <selectKey keyProperty="SEQ" resultType="int" order="BEFORE">
             SELECT MENU_SEQ.NEXTVAL FROM DUAL
@@ -17,8 +17,17 @@
 
     </insert>
 
+    <select id="getUserInfo" parameterType="String" resultType="com.jew.models.Member">
+     /* AccessMapper.getUserInfo [AccessMapper.xml] : 로그인시 유저정보 가져오기 */
+
+        SELECT *
+        FROM Member
+        WHERE DEL_YN = 'N' AND USER_ID = #{USER_ID}
+
+    </select>
+
     <select id="myMenuList" parameterType="String" resultType="com.jew.models.Menu">
-     /* MenuMapper.myMenuList [Menu.xml] : 로그인시 메뉴 리스트 일괄 조회 */
+     /* AccessMapper.myMenuList [AccessMapper.xml] : 로그인시 메뉴 리스트 일괄 가져오기 */
         
         <!--메뉴 권한 정보 추후에 추가 필요-->
         SELECT *
